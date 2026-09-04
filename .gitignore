@@ -1,0 +1,5 @@
+# System & Test screenshots
+test_screenshot_*.png
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="تفاصيل الدخل - واجهة H5 تفاعلية فائقة الأداء مخصصة للدمج في Flutter">
+  <title>تفاصيل الدخل | Income Details</title>
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Embedded Arabic Typography & Offline Fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Main Viewport Scaler Wrapper -->
+  <div id="app-viewport">
+    <div id="canvas-container" class="canvas-container appContainer">
+      <!-- Static Surface Layer (Rendered ONCE on GPU) -->
+      <canvas id="staticCanvas" width="592" height="1280"></canvas>
+      
+      <!-- Dynamic Interactive Layer (Active Only During Animation / Touch) -->
+      <canvas id="dynamicCanvas" width="592" height="1280"></canvas>
+
+      <!-- Glassmorphic Interactive Modal / Bottom Sheet System -->
+      <div id="modal-backdrop" class="modal-backdrop-hidden">
+        <div id="modal-sheet" class="modal-sheet-hidden">
+          <div class="sheet-drag-handle"></div>
+          <div class="sheet-header">
+            <div class="sheet-title-row">
+              <span id="sheet-icon" class="sheet-icon">★</span>
+              <h3 id="sheet-title">عنوان النافذة</h3>
+            </div>
+            <button id="sheet-close-btn" aria-label="إغلاق">✕</button>
+          </div>
+          <div id="sheet-body" class="sheet-body">
+            <!-- Dynamic Content Injected Here -->
+          </div>
+          <div class="sheet-footer">
+            <button id="sheet-primary-btn" class="sheet-btn primary-btn">تأكيد الإجراء</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Toast Feedback for Flutter & Web -->
+      <div id="toast" class="toast-hidden">
+        <span id="toast-icon">✓</span>
+        <span id="toast-message">تم نسخ كود الوكالة بنجاح</span>
+      </div>
+      
+      <!-- Debug / FPS Telemetry Monitor -->
+      <div id="perf-monitor" class="perf-monitor-hidden">
+        <span id="fps-label">FPS: 60</span> | <span id="cpu-mode">GPU Frozen: Active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="flutter_bridge.js"></script>
+  <script src="engine.js"></script>
+</body>
+</html>
