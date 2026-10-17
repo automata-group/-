@@ -4,63 +4,345 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="تفاصيل الدخل - واجهة H5 تفاعلية فائقة الأداء مخصصة للدمج في Flutter">
-  <title>تفاصيل الدخل | Income Details</title>
+  <title>VIP Host Income Card | Reusable Widget Demo</title>
   
-  <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="style.css">
-  
-  <!-- Embedded Arabic Typography & Offline Fallbacks -->
+  <!-- Arabic & Royal Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Cinzel:wght@700;800&family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #070414;
+      --card-gold: #F7E5A9;
+      --accent-purple: #9C27B0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: radial-gradient(circle at 50% 20%, rgba(106, 27, 154, 0.28) 0%, transparent 60%), #070414;
+      font-family: 'Cairo', 'Outfit', sans-serif;
+      color: #FFF8E7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px 16px;
+      overflow-x: hidden;
+    }
+
+    .demo-page-wrapper {
+      width: 100%;
+      max-width: 592px; /* Standard vertical mobile viewport matching Flutter */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* Container for the host card widget */
+    #my-host-card-container {
+      width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease;
+    }
+
+    /* Demo Controls & Testing Bar */
+    .demo-control-card {
+      width: 100%;
+      background: rgba(22, 10, 38, 0.85);
+      border: 1px solid rgba(247, 229, 169, 0.25);
+      border-radius: 18px;
+      padding: 16px 20px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .demo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(247, 229, 169, 0.15);
+      padding-bottom: 10px;
+    }
+
+    .demo-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--card-gold);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-status {
+      background: rgba(118, 211, 152, 0.2);
+      color: #76D398;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(118, 211, 152, 0.4);
+    }
+
+    .demo-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .demo-btn {
+      background: linear-gradient(135deg, rgba(247, 229, 169, 0.2) 0%, rgba(168, 121, 40, 0.3) 100%);
+      border: 1px solid rgba(247, 229, 169, 0.4);
+      color: #FFF8E7;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .demo-btn:hover {
+      background: linear-gradient(135deg, rgba(247, 229, 169, 0.35) 0%, rgba(168, 121, 40, 0.5) 100%);
+      transform: translateY(-1px);
+    }
+
+    .demo-btn:active {
+      transform: translateY(1px);
+    }
+
+    .demo-log-box {
+      background: rgba(10, 4, 18, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #D5CCE5;
+      min-height: 48px;
+      max-height: 90px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+
+    .log-item {
+      color: #76D398;
+      font-size: 11.5px;
+    }
+
+    /* Floating Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      background: rgba(35, 16, 56, 0.95);
+      border: 1.5px solid var(--card-gold);
+      color: #FFF8E7;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
-  <!-- Main Viewport Scaler Wrapper -->
-  <div id="app-viewport">
-    <div id="canvas-container" class="canvas-container appContainer">
-      <!-- Static Surface Layer (Rendered ONCE on GPU) -->
-      <canvas id="staticCanvas" width="592" height="1280"></canvas>
-      
-      <!-- Dynamic Interactive Layer (Active Only During Animation / Touch) -->
-      <canvas id="dynamicCanvas" width="592" height="1280"></canvas>
 
-      <!-- Glassmorphic Interactive Modal / Bottom Sheet System -->
-      <div id="modal-backdrop" class="modal-backdrop-hidden">
-        <div id="modal-sheet" class="modal-sheet-hidden">
-          <div class="sheet-drag-handle"></div>
-          <div class="sheet-header">
-            <div class="sheet-title-row">
-              <span id="sheet-icon" class="sheet-icon">★</span>
-              <h3 id="sheet-title">عنوان النافذة</h3>
-            </div>
-            <button id="sheet-close-btn" aria-label="إغلاق">✕</button>
-          </div>
-          <div id="sheet-body" class="sheet-body">
-            <!-- Dynamic Content Injected Here -->
-          </div>
-          <div class="sheet-footer">
-            <button id="sheet-primary-btn" class="sheet-btn primary-btn">تأكيد الإجراء</button>
-          </div>
+  <div class="demo-page-wrapper">
+
+    <!-- 1. THE DROP-IN HOST CARD CONTAINER (JUST ONE DIV!) -->
+    <div id="my-host-card-container"></div>
+
+    <!-- 2. INTERACTIVE DEMO CONTROL PANEL -->
+    <div class="demo-control-card">
+      <div class="demo-header">
+        <div class="demo-title">
+          <span>👑</span>
+          <span>لوحة اختبار الويدجت (VipHostCard Widget)</span>
         </div>
+        <span class="badge-status">GPU Canvas: 0% Idle</span>
       </div>
 
-      <!-- Interactive Toast Feedback for Flutter & Web -->
-      <div id="toast" class="toast-hidden">
-        <span id="toast-icon">✓</span>
-        <span id="toast-message">تم نسخ كود الوكالة بنجاح</span>
+      <div class="demo-actions-grid">
+        <button class="demo-btn" id="btn-update-random">
+          <span>🔄</span>
+          <span>تحديث أرقام عشوائي</span>
+        </button>
+
+        <button class="demo-btn" id="btn-change-host">
+          <span>👤</span>
+          <span>تغيير المضيف (VIP)</span>
+        </button>
+
+        <button class="demo-btn" id="btn-test-flutter">
+          <span>📱</span>
+          <span>محاكاة إشارة Flutter</span>
+        </button>
+
+        <button class="demo-btn" id="btn-reset">
+          <span>↺</span>
+          <span>إعادة تعيين</span>
+        </button>
       </div>
-      
-      <!-- Debug / FPS Telemetry Monitor -->
-      <div id="perf-monitor" class="perf-monitor-hidden">
-        <span id="fps-label">FPS: 60</span> | <span id="cpu-mode">GPU Frozen: Active</span>
+
+      <div class="demo-log-box" id="event-log">
+        <div style="color:#A59EBA;">اضغط على أي زر في الكارد (محادثة، تحويل، إيداعات، كوينز) لمشاهدة استجابة الموديول هنا...</div>
       </div>
     </div>
+
   </div>
 
-  <!-- JavaScript Modules -->
-  <script src="flutter_bridge.js"></script>
-  <script src="engine.js"></script>
+  <div id="toast"></div>
+
+  <!-- LOAD THE REUSABLE WIDGET SCRIPT -->
+  <script src="vip_host_card.js"></script>
+
+  <script>
+    // --- 1. INITIALIZE VIP HOST CARD AS A DROP-IN WIDGET ---
+    const card = new VipHostCard('#my-host-card-container', {
+      templateUrl: 'static/card_template.png?v=v3_full_assets',
+      animateNumbers: true,
+      pulseCrown: true,
+      labels: {
+        deposits: 'إيداعات الوكالة',
+        commission: 'عمولة الوكالة',
+        deductions: 'خصومات ومكافآت الوقت',
+        joinSuffix: '• انضمام'
+      },
+      icons: {
+        deposits: 'static/icon_deposits.png',
+        commission: 'static/icon_commission.png',
+        deductions: 'static/icon_deductions.png',
+        coinP: 'static/p_coin_gold.png',
+        coinX: 'static/x_coin_gold.png',
+        clock: 'static/clock_gold.png',
+        male: 'static/icon_male.png',
+        crownBadge: 'static/icon_crown_badge.png',
+        pillFrame: 'static/gold_pill_frame.png'
+      },
+      data: {
+        hostName: 'The King...',
+        genderAge: '♂ 29',
+        level: 'H5',
+        joinDate: '12/08/2026',
+        deposits: 483800,
+        commission: 434600,
+        deductions: 49200,
+        totalXcoins: '3,502,640',
+        durationText: '7372 دقيقة & 18 يوم'
+      },
+      
+      // Event Callbacks from the widget
+      onChatClick: (data) => logEvent(`💬 تم الضغط على زر المحادثة مع المضيف (${data.hostName})`),
+      onTransferClick: (data) => logEvent(`⇄ تم الضغط على زر تحويل الكوينز للمضيف`),
+      onProfileClick: (data) => logEvent(`👑 تم النقر على ملف المضيف: ${data.hostName} | رتبة: ${data.level}`),
+      onRowClick: (rowKey, data) => {
+        const names = { deposits: 'إيداعات الوكالة', commission: 'عمولة الوكالة', deductions: 'خصومات الوقت' };
+        logEvent(`📊 تم النقر على صف: [${names[rowKey] || rowKey}]`);
+      },
+      onXcoinsClick: (data) => logEvent(`🪙 تم النقر على رصيد محفظة Xcoins (${data.totalXcoins})`),
+      onDurationClick: (data) => logEvent(`⏱️ تم النقر على سجل البث: (${data.durationText})`),
+      onCrownClick: (data) => logEvent(`👑 تم النقر على وسام التاج الملكي الماسي`)
+    });
+
+    // --- 2. DEMO CONTROLS INTERACTION ---
+    const logBox = document.getElementById('event-log');
+    const toastEl = document.getElementById('toast');
+    let toastTimeout = null;
+
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 2000);
+    }
+
+    function logEvent(msg) {
+      const time = new Date().toLocaleTimeString('ar-EG', { hour12: false });
+      logBox.innerHTML = `<div class="log-item">[${time}] ${msg}</div>` + logBox.innerHTML;
+      showToast(msg);
+    }
+
+    // Button: Update random numbers via card.updateData(...)
+    document.getElementById('btn-update-random').addEventListener('click', () => {
+      const newDep = Math.floor(400000 + Math.random() * 500000);
+      const newComm = Math.floor(newDep * 0.9);
+      const newDed = Math.floor(30000 + Math.random() * 30000);
+      const newX = (3000000 + Math.floor(Math.random() * 1000000)).toLocaleString();
+
+      card.updateData({
+        deposits: newDep,
+        commission: newComm,
+        deductions: newDed,
+        totalXcoins: newX
+      });
+
+      logEvent(`🔄 تم تحديث الأرقام برمجياً: إيداعات = ${newDep.toLocaleString()}`);
+    });
+
+    // Button: Change Host Name & Level
+    let isKing = true;
+    document.getElementById('btn-change-host').addEventListener('click', () => {
+      isKing = !isKing;
+      if (isKing) {
+        card.updateData({ hostName: 'The King...', level: 'H5', genderAge: '♂ 29' });
+        logEvent('👤 تم تبديل المضيف إلى: The King... (H5)');
+      } else {
+        card.updateData({ hostName: 'البرنس 💎', level: 'H8 Elite', genderAge: '♂ 31' });
+        logEvent('👤 تم تبديل المضيف إلى: البرنس 💎 (H8 Elite)');
+      }
+    });
+
+    // Button: Simulate Flutter Bridge update
+    document.getElementById('btn-test-flutter').addEventListener('click', () => {
+      const sampleFlutterPayload = {
+        deposits: 999999,
+        commission: 899999,
+        deductions: 100000,
+        totalXcoins: '5,000,000'
+      };
+      card.updateData(sampleFlutterPayload);
+      logEvent('📱 تم استقبال إشارة تحديث بيانات حية من Flutter!');
+    });
+
+    // Button: Reset
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      card.updateData({
+        hostName: 'The King...',
+        genderAge: '♂ 29',
+        level: 'H5',
+        joinDate: '12/08/2026',
+        deposits: 483800,
+        commission: 434600,
+        deductions: 49200,
+        totalXcoins: '3,502,640',
+        durationText: '7372 دقيقة & 18 يوم'
+      });
+      logEvent('↺ تمت استعادة البيانات الافتراضية بنجاح');
+    });
+  </script>
 </body>
 </html>
